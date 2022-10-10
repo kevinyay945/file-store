@@ -47,9 +47,26 @@ var _ = Describe("PCloud", func() {
 			})
 			It("Success", func() {
 				data, _ := ioutil.ReadFile("./wakuwaku.jpeg")
-				resp, err := PCloudClient.UploadFile(OTHER, "wakuwaku.jpeg", data)
+				resp, err := PCloudClient.UploadFile(OTHER, "wakuwaku.jpeg", data, UploadFileOption{RenameIfExists: true})
 				Expect(resp.Result).Should(Equal(0))
 				Expect(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("getfilepublink ", func() {
+			// https://docs.pcloud.com/methods/public_links/getfilepublink.html
+			It("Success", func() {
+				resp, err := PCloudClient.GetFilePublicLink("/Public Asset/obsidian/aaa.jpeg", 0)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(resp.Metadata.Fileid).Should(Equal(int64(43946969297)))
+			})
+		})
+		Context("getpubthumblink ", func() {
+			// https://docs.pcloud.com/methods/public_links/getfilepublink.html
+			It("Success", func() {
+				link, err := PCloudClient.GetPublicThumbnail("/Public Asset/obsidian/aaa.jpeg", 0, 1024, 768)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(link).Should(Equal("https://api.pcloud.com/getpubthumb?code=XZaarSVZ9RtK8qBnsLjta2naRLzMQbjvCU97&size=1024x768"))
 			})
 		})
 	})
