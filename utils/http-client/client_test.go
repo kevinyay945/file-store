@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var _ = Describe("Http Client", func() {
+var _ = PDescribe("Http Client", func() {
 	var _client IHttpClient
 	BeforeEach(func() {
 		_client = NewHttpClient()

@@ -15,7 +15,9 @@ type IHttpClient interface {
 	SetAuthToken(s string) IHttpClient
 	Post(s string) (resp Response, err error)
 	SetQueryParam(key string, value string) IHttpClient
+	ResetQueryParam() IHttpClient
 	SetFileReader(param string, fileName string, reader io.Reader) IHttpClient
+	ResetFileReader() IHttpClient
 }
 
 type MultipartFile struct {
@@ -29,6 +31,16 @@ type HttpClient struct {
 	authToken      string
 	queryParam     url.Values
 	multipartFiles []MultipartFile
+}
+
+func (h *HttpClient) ResetQueryParam() IHttpClient {
+	h.queryParam = url.Values{}
+	return h
+}
+
+func (h *HttpClient) ResetFileReader() IHttpClient {
+	h.multipartFiles = []MultipartFile{}
+	return h
 }
 
 func (h *HttpClient) SetFileReader(param string, fileName string, reader io.Reader) IHttpClient {
