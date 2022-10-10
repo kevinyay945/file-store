@@ -16,6 +16,7 @@ func main() {
 		fmt.Println("can't load .env.development")
 	}
 	e := echo.New()
+	e.HideBanner = true
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
@@ -26,7 +27,21 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
-	e.POST("/image", _router.UploadPicture)
-	e.GET("/obsidian/:fileName", _router.GetPublicThumbnailLink)
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Format: "method=${method}, uri=${uri}, status=${status}\n",
+	}))
+	g := e.Group("/v1/image")
+	g.Use(middleware.KeyAuthWithConfig(middleware.KeyAuthConfig{
+		Skipper:    nil,
+		KeyLookup:  "header:Authorization",
+		AuthScheme: "Client-ID",
+		Validator: func(auth string, c echo.Context) (bool, error) {
+			return auth == os.Getenv("CLIENT_ID"), nil
+		},
+		ErrorHandler:           nil,
+		ContinueOnIgnoredError: false,
+	}))
+	g.POST("", _router.UploadPicture)
+	e.GET("/v1/temp-link/obsidian/:fileName", _router.GetPublicThumbnailLink)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }

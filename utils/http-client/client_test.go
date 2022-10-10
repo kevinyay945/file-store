@@ -10,9 +10,9 @@ import (
 	"os"
 )
 
-var _ = PDescribe("Http Client", func() {
+var _ = Describe("Http Client", func() {
 	var _client IHttpClient
-	PWhen("real endpoint", func() {
+	When("real endpoint", func() {
 		BeforeEach(func() {
 			_client = NewHttpClient()
 			err := godotenv.Load("../../.env.development")

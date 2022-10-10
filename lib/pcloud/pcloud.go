@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+//go:generate mockgen -destination=pcloud_mock.go -package=pcloud . IClient
 type IClient interface {
 	SetAccessToken(s string)
 	CheckAuthorization() (err error)
