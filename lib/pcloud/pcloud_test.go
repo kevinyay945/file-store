@@ -11,7 +11,7 @@ import (
 var _ = Describe("PCloud", func() {
 	var PCloudClient IClient
 
-	When("Real Upload", func() {
+	PWhen("Real Upload", func() {
 		var PCLOUD_ACCESS_TOKEN string
 		BeforeEach(func() {
 			err := godotenv.Load("../../.env.development")

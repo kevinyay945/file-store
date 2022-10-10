@@ -7,9 +7,8 @@ import (
 	"io"
 	"mime/multipart"
 	"my-imgur/lib/pcloud"
+	"my-imgur/model"
 	"net/http"
-	"net/url"
-	"os"
 )
 
 type MyResponse struct {
@@ -20,12 +19,15 @@ type MyResponse struct {
 
 type Router struct {
 	pCloudClient pcloud.IClient
+	imageModel   model.IImage
 }
 
 func NewRouter() *Router {
 	client := pcloud.NewClient()
+	image := model.NewImage()
 	return &Router{
 		pCloudClient: client,
+		imageModel:   image,
 	}
 }
 
@@ -46,18 +48,22 @@ func (r *Router) UploadPicture(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
-	res, err := r.pCloudClient.UploadFile(pcloud.OBSIDIAN, file.Filename, fileBytes.Bytes(), pcloud.UploadFileOption{RenameIfExists: true})
+	path, err := r.imageModel.UploadFile(file.Filename, fileBytes.Bytes())
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	response := MyResponse{}
-	response.Data.Link = os.Getenv("PUBLIC_DOMAIN") + "/obsidian/" + url.PathEscape(res.Metadata[0].Name)
+
+	response.Data.Link = path
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err)
+	}
 	return c.JSON(http.StatusOK, response)
 }
 func (r *Router) GetPublicThumbnailLink(c echo.Context) error {
-	param := c.Param("path")
-	link, err := r.pCloudClient.GetPublicThumbnail("/Public Asset/obsidian/"+param, 0, 1024, 768)
+	param := c.Param("fileName")
+	link, err := r.imageModel.GetPublicThumbnailLink(param, 0, 1024, 768)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}

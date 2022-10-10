@@ -27,6 +27,6 @@ func main() {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 	e.POST("/image", _router.UploadPicture)
-	e.GET("/obsidian/:path", _router.GetPublicThumbnailLink)
+	e.GET("/obsidian/:fileName", _router.GetPublicThumbnailLink)
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
