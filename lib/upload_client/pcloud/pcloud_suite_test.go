@@ -1,4 +1,4 @@
-package pcloud_test
+package pcloud
 
 import (
 	"testing"

@@ -5,11 +5,12 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"io/ioutil"
+	"my-imgur/lib/upload_client"
 	"os"
 )
 
 var _ = Describe("PCloud", func() {
-	var PCloudClient IClient
+	var PCloudClient upload_client.IClient
 
 	PWhen("Real Upload", func() {
 		var PCLOUD_ACCESS_TOKEN string
@@ -47,8 +48,8 @@ var _ = Describe("PCloud", func() {
 			})
 			It("Success", func() {
 				data, _ := ioutil.ReadFile("./wakuwaku.jpeg")
-				resp, err := PCloudClient.UploadFile(OTHER, "wakuwaku.jpeg", data, UploadFileOption{RenameIfExists: true})
-				Expect(resp.Result).Should(Equal(0))
+				resp, err := PCloudClient.UploadFile(upload_client.OTHER, "wakuwaku.jpeg", data, upload_client.UploadFileOption{PCloud: upload_client.PCloudUploadFileOption{RenameIfExists: true}})
+				Expect(resp.PCloud.Result).Should(Equal(0))
 				Expect(err).ShouldNot(HaveOccurred())
 			})
 		})
@@ -58,7 +59,7 @@ var _ = Describe("PCloud", func() {
 			It("Success", func() {
 				resp, err := PCloudClient.GetFilePublicLink("/Public Asset/obsidian/aaa.jpeg", 0)
 				Expect(err).ShouldNot(HaveOccurred())
-				Expect(resp.Metadata.Fileid).Should(Equal(int64(43946969297)))
+				Expect(resp.PCloud.Metadata.Fileid).Should(Equal(int64(43946969297)))
 			})
 		})
 		Context("getpubthumblink ", func() {

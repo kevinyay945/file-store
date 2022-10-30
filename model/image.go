@@ -1,34 +1,35 @@
 package model
 
 import (
-	"my-imgur/lib/pcloud"
+	"my-imgur/lib/upload_client"
+	"my-imgur/lib/upload_client/google_drive"
 	"net/url"
 	"os"
 )
 
 type Image struct {
-	pCloudClient pcloud.IClient
+	uploadClient upload_client.IClient
 }
 
 func (i *Image) GetPublicThumbnailLink(fileName string, fileId int, width int, height int) (link string, err error) {
-	link, err = i.pCloudClient.GetPublicThumbnail("/Public Asset/obsidian/"+fileName, fileId, width, height)
+	link, err = i.uploadClient.GetFileLink(upload_client.OBSIDIAN, fileName, fileId, width, height)
 	return
 }
 
 func (i *Image) UploadFile(fileName string, data []byte) (path string, err error) {
-	res, err := i.pCloudClient.UploadFile(pcloud.OBSIDIAN, fileName, data, pcloud.UploadFileOption{RenameIfExists: true})
+	res, err := i.uploadClient.UploadFile(upload_client.OBSIDIAN, fileName, data, upload_client.UploadFileOption{PCloud: upload_client.PCloudUploadFileOption{RenameIfExists: true}})
 	if err != nil {
 		return "", err
 	}
-	path = os.Getenv("PUBLIC_DOMAIN") + "/v1/temp-link/obsidian/" + url.PathEscape(res.Metadata[0].Name)
+	path = os.Getenv("PUBLIC_DOMAIN") + "/v1/temp-link/obsidian/" + url.PathEscape(res.GoogleDriveApi.Name)
 	//path = os.Getenv("PUBLIC_DOMAIN") + "/obsidian/" + res.Metadata[0].Name
 	return
 }
 
 func NewImage() IImage {
-	client := pcloud.NewClient()
+	client := google_drive.NewClient()
 	return &Image{
-		pCloudClient: client,
+		uploadClient: client,
 	}
 }
 

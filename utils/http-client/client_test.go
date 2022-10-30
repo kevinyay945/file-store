@@ -12,7 +12,7 @@ import (
 
 var _ = Describe("Http Client", func() {
 	var _client IHttpClient
-	When("real endpoint", func() {
+	PWhen("real endpoint", func() {
 		BeforeEach(func() {
 			_client = NewHttpClient()
 			err := godotenv.Load("../../.env.development")
