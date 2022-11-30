@@ -5,9 +5,12 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	log "github.com/sirupsen/logrus"
 	"my-imgur/router"
+	httpClient "my-imgur/utils/http-client"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -15,6 +18,16 @@ func main() {
 	if err != nil {
 		fmt.Println("can't load .env.development")
 	}
+	go startAPIService()
+	for range time.Tick(10 * time.Minute) {
+		client := httpClient.NewHttpClient()
+		resp, _ := client.Get(os.Getenv("PUBLIC_DOMAIN"))
+		log.Infof("health check %s\n", resp)
+	}
+	select {}
+}
+
+func startAPIService() {
 	e := echo.New()
 	e.HideBanner = true
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

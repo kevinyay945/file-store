@@ -47,6 +47,21 @@ func (mr *MockIClientMockRecorder) CheckAuthorization() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckAuthorization", reflect.TypeOf((*MockIClient)(nil).CheckAuthorization))
 }
 
+// GetFileLink mocks base method.
+func (m *MockIClient) GetFileLink(arg0 AllowUploadLocation, arg1 string, arg2, arg3, arg4 int) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFileLink", arg0, arg1, arg2, arg3, arg4)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFileLink indicates an expected call of GetFileLink.
+func (mr *MockIClientMockRecorder) GetFileLink(arg0, arg1, arg2, arg3, arg4 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFileLink", reflect.TypeOf((*MockIClient)(nil).GetFileLink), arg0, arg1, arg2, arg3, arg4)
+}
+
 // GetFilePublicLink mocks base method.
 func (m *MockIClient) GetFilePublicLink(arg0 string, arg1 int) (GetFilePublicLinkResponse, error) {
 	m.ctrl.T.Helper()
