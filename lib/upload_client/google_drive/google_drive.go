@@ -10,6 +10,7 @@ import (
 	"log"
 	"my-imgur/lib/upload_client"
 	"os"
+	"strings"
 )
 
 type Client struct {
@@ -44,7 +45,7 @@ func NewClient() upload_client.IClient {
 func (c *Client) GetFileLink(uploadPath upload_client.AllowUploadLocation, fileName string, fileId int, width int, height int) (link string, err error) {
 	query := fmt.Sprintf("name = '%s'", fileName)
 	r, err := c.driveService.Files.List().PageSize(10).Q(query).
-		Fields("nextPageToken, files(id, name)").Do()
+		Fields("nextPageToken, files(id, name,thumbnailLink)").Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve files: %v", err)
 	}
@@ -53,13 +54,18 @@ func (c *Client) GetFileLink(uploadPath upload_client.AllowUploadLocation, fileN
 		fmt.Println("No files found.")
 	} else {
 		for _, i := range r.Files {
-			fmt.Printf("%s (%s)\n", i.Name, i.Id)
+			//fmt.Printf("%s (%s)\n", i.Name, i.Id)
+			//fmt.Printf("webview link: %v\n", i.WebViewLink)
+			//fmt.Printf("webcontent link: %v\n", i.WebContentLink)
+			//fmt.Printf("thumbnail link: %v\n", i.ThumbnailLink)
+			//fmt.Printf("exportLink link: %v\n", i.ExportLinks)
 			if err != nil {
 				fmt.Println("err", err.Error())
 			}
-			link = fmt.Sprintf("https://lh3.google.com/u/0/d/%s\n", i.Id)
+			link = strings.Split(i.ThumbnailLink, "=")[0]
+			//link = fmt.Sprintf("https://lh3.google.com/u/0/d/%s\n", i.Id)
 			//link = fmt.Sprintf("https://drive.google.com/uc?export=view&id=%s\n", i.Id)
-			//fmt.Printf("share link is https://drive.google.com/uc?export=view&id=%s\n", i.Id)
+			//fmt.Printf("share link is %s\n", link)
 		}
 	}
 	return
