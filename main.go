@@ -19,7 +19,7 @@ func main() {
 		fmt.Println("can't load .env.development")
 	}
 	go startAPIService()
-	for range time.Tick(10 * time.Minute) {
+	for range time.Tick(1 * time.Minute) {
 		client := httpClient.NewHttpClient()
 		resp, _ := client.Get(os.Getenv("PUBLIC_DOMAIN"))
 		log.Infof("health check %s\n", resp)
