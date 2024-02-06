@@ -57,7 +57,8 @@ func (c *Client) GetFileLink(uploadPath upload_client.AllowUploadLocation, fileN
 			if err != nil {
 				fmt.Println("err", err.Error())
 			}
-			link = fmt.Sprintf("https://drive.google.com/uc?export=view&id=%s\n", i.Id)
+			link = fmt.Sprintf("https://lh3.google.com/u/0/d/%s\n", i.Id)
+			//link = fmt.Sprintf("https://drive.google.com/uc?export=view&id=%s\n", i.Id)
 			//fmt.Printf("share link is https://drive.google.com/uc?export=view&id=%s\n", i.Id)
 		}
 	}
